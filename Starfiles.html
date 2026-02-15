@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StarsFiles Apps VIP</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: #0a0c15;
+            transition: all 0.3s ease;
+        }
+
+        /* Video Background (halaman login) */
+        .video-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .video-background video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.4) saturate(1.2);
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(10, 14, 23, 0.7) 0%, rgba(20, 30, 50, 0.8) 100%);
+            z-index: -1;
+            backdrop-filter: blur(3px);
+        }
+
+        /* Container untuk kedua halaman */
+        .page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Halaman Login */
+        #login-page {
+            display: flex;
+        }
+
+        #vip-page {
+            display: none;
+        }
+
+        /* Login Card */
+        .login-card {
+            background: rgba(8, 12, 22, 0.75);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(245, 176, 27, 0.4);
+            border-radius: 3rem;
+            box-shadow: 
+                0 40px 80px -20px #000000,
+                0 0 0 1px rgba(245, 176, 27, 0.3) inset,
+                0 0 50px rgba(245, 176, 27, 0.3);
+            width: 100%;
+            max-width: 480px;
+            padding: 2.8rem 2.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #f5b01b, #ffd966, #f5b01b, transparent);
+            box-shadow: 0 0 20px #f5b01b;
+        }
+
+        /* Logo Section */
+        .logo-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .logo-image {
+            width: 120px;
+            height: 120px;
+            border-radius: 30px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 2px solid rgba(245, 176, 27, 0.5);
+            padding: 0.5rem;
+            box-shadow: 0 0 30px rgba(245, 176, 27, 0.4);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .logo-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 20px;
+        }
+
+        .logo-text {
+            font-size: 2.2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ffffff, #f5d76e);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.5px;
+            text-align: center;
+        }
+
+        .vip-badge {
+            background: linear-gradient(145deg, #f5b01b, #ffd966);
+            padding: 0.3rem 1.5rem;
+            border-radius: 40px;
+            font-weight: 700;
+            font-size: 1rem;
+            color: #0a0e1a;
+            border: 1px solid #ffe28a;
+            box-shadow: 0 0 20px #f5b01b;
+            margin-top: 0.5rem;
+            display: inline-block;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .system-title {
+            text-align: center;
+            margin-bottom: 2.2rem;
+        }
+
+        .system-title span {
+            background: rgba(245, 176, 27, 0.15);
+            border: 1px solid rgba(245, 176, 27, 0.5);
+            padding: 0.5rem 2.5rem;
+            border-radius: 60px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            letter-spacing: 3px;
+            color: #fad974;
+            text-transform: uppercase;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 0 20px rgba(245, 176, 27, 0.3);
+        }
+
+        .buy-hint {
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 60px;
+            padding: 1rem 1.8rem;
+            margin-bottom: 2.5rem;
+            border: 1px solid rgba(245, 176, 27, 0.3);
+            border-left: 5px solid #f5b01b;
+            text-align: center;
+            font-size: 1rem;
+            color: #d0ddff;
+            backdrop-filter: blur(8px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+        }
+
+        .buy-hint a {
+            color: #fad974;
+            font-weight: 700;
+            text-decoration: none;
+            background: rgba(245, 176, 27, 0.15);
+            padding: 0.3rem 1rem;
+            border-radius: 40px;
+            margin-left: 0.3rem;
+            border: 1px solid rgba(245, 176, 27, 0.5);
+            transition: all 0.2s;
+            font-family: monospace;
+            font-size: 1rem;
+        }
+
+        .buy-hint a:hover {
+            background: rgba(245, 176, 27, 0.3);
+            border-color: #fad974;
+            color: #ffeeaa;
+        }
+
+        .input-group {
+            margin-bottom: 1.8rem;
+        }
+
+        .input-label {
+            display: block;
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #b8ccff;
+            margin-bottom: 0.6rem;
+            padding-left: 0.8rem;
+        }
+
+        .input-field {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(245, 176, 27, 0.3);
+            border-bottom: 3px solid rgba(245, 176, 27, 0.5);
+            border-radius: 20px;
+            padding: 1.2rem 1.8rem;
+            font-size: 1rem;
+            color: white;
+            outline: none;
+            transition: all 0.25s ease;
+            box-shadow: inset 0 4px 10px rgba(0,0,0,0.6);
+            backdrop-filter: blur(5px);
+        }
+
+        .input-field:focus {
+            border-color: #f5b01b;
+            border-bottom-color: #ffd966;
+            background: rgba(20, 30, 50, 0.7);
+            box-shadow: 0 0 0 4px rgba(245, 176, 27, 0.2), inset 0 2px 8px #000;
+        }
+
+        .input-field::placeholder {
+            color: rgba(200, 210, 240, 0.3);
+            font-weight: 300;
+            font-size: 0.9rem;
+        }
+
+        .login-btn {
+            width: 100%;
+            background: linear-gradient(145deg, #1f2b44, #121b30);
+            border: 1px solid #f5b01b;
+            border-radius: 50px;
+            padding: 1.2rem 2rem;
+            font-size: 1.5rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            color: #fad974;
+            text-shadow: 0 2px 5px #000000;
+            box-shadow: 
+                0 15px 30px -8px #000000,
+                0 0 0 1px #f5b01b inset,
+                0 0 20px rgba(245, 176, 27, 0.3);
+            cursor: pointer;
+            transition: 0.2s;
+            margin: 2rem 0 1.5rem 0;
+            backdrop-filter: blur(5px);
+        }
+
+        .login-btn:hover {
+            background: linear-gradient(145deg, #2c3d62, #1a2540);
+            color: #ffffff;
+            border-color: #ffe28a;
+            transform: scale(1.02);
+            box-shadow: 0 20px 40px -5px #000000, 0 0 0 2px #f5b01b inset, 0 0 40px #f5b01b;
+        }
+
+        .login-btn:active {
+            transform: scale(0.99);
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-link {
+            color: #8fa3d9;
+            text-decoration: none;
+            font-size: 0.9rem;
+            border-bottom: 1px dotted #f5b01b80;
+            transition: 0.2s;
+            cursor: pointer;
+        }
+
+        .footer-link:hover {
+            color: #fad974;
+            border-bottom-color: #f5b01b;
+        }
+
+        .copyright {
+            text-align: center;
+            color: #40527a;
+            font-size: 0.7rem;
+            margin-top: 2rem;
+            letter-spacing: 0.5px;
+        }
+
+        /* VIP Menu Styles */
+        .vip-card {
+            background: rgba(8, 12, 22, 0.8);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(245, 176, 27, 0.3);
+            border-radius: 3.5rem;
+            box-shadow: 
+                0 40px 80px -20px #000000,
+                0 0 0 1px rgba(245, 176, 27, 0.2) inset,
+                0 0 40px rgba(245, 176, 27, 0.15);
+            width: 100%;
+            max-width: 900px;
+            padding: 2.5rem 2.5rem 3rem 2.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .vip-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #f5b01b, #ffd966, #f5b01b, transparent);
+            box-shadow: 0 0 20px #f5b01b;
+        }
+
+        .vip-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .vip-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            background: rgba(0, 0, 0, 0.4);
+            padding: 0.5rem 1.8rem 0.5rem 2rem;
+            border-radius: 60px;
+            border: 1px solid rgba(245, 176, 27, 0.4);
+            backdrop-filter: blur(10px);
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .vip-logo:hover {
+            border-color: #f5b01b;
+            box-shadow: 0 0 20px rgba(245, 176, 27, 0.3);
+        }
+
+        .stars-text {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ffffff, #d4e0ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.5px;
+        }
+
+        .vip-badge-large {
+            background: linear-gradient(145deg, #f5b01b, #ffd966);
+            padding: 0.4rem 1.4rem;
+            border-radius: 40px;
+            font-weight: 800;
+            font-size: 1.2rem;
+            color: #0a0e1a;
+            border: 1px solid #ffe28a;
+            box-shadow: 0 0 25px #f5b01b;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .date-badge {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid #3f4d75;
+            border-radius: 40px;
+            padding: 0.5rem 1.5rem;
+            color: #aabff5;
+            font-weight: 500;
+            font-size: 0.9rem;
+            backdrop-filter: blur(5px);
+        }
+
+        .vip-main-title {
+            text-align: center;
+            margin: 1rem 0 3rem 0;
+            position: relative;
+        }
+
+        .vip-giant {
+            font-size: 8rem;
+            font-weight: 900;
+            background: linear-gradient(180deg, #ffffff 0%, #f5b01b 80%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            line-height: 1;
+            text-shadow: 
+                0 0 40px rgba(245, 176, 27, 0.6),
+                0 20px 30px rgba(0, 0, 0, 0.6);
+            letter-spacing: 10px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .vip-giant::before {
+            content: '✦';
+            position: absolute;
+            left: -40px;
+            top: 20px;
+            font-size: 3rem;
+            color: #f5b01b;
+            opacity: 0.7;
+            text-shadow: 0 0 20px gold;
+        }
+
+        .vip-giant::after {
+            content: '✦';
+            position: absolute;
+            right: -40px;
+            top: 20px;
+            font-size: 3rem;
+            color: #f5b01b;
+            opacity: 0.7;
+            text-shadow: 0 0 20px gold;
+        }
+
+        .vip-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.8rem;
+            margin: 3rem 0 3.5rem 0;
+        }
+
+        .vip-menu-item {
+            background: rgba(15, 22, 40, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(245, 176, 27, 0.2);
+            border-radius: 2.5rem;
+            padding: 2.5rem 1.5rem;
+            text-align: center;
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.3, 1);
+            cursor: pointer;
+            text-decoration: none;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 15px 30px -15px #000000cc;
+        }
+
+        .vip-menu-item::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(145deg, #f5b01b, transparent 70%);
+            border-radius: 2.5rem;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: -1;
+        }
+
+        .vip-menu-item:hover {
+            transform: translateY(-8px) scale(1.02);
+            border-color: #f5b01b;
+            box-shadow: 0 20px 40px -10px #000000, 0 0 0 1px #f5b01b inset, 0 0 30px rgba(245, 176, 27, 0.4);
+            background: rgba(25, 35, 60, 0.9);
+        }
+
+        .vip-menu-item:hover::before {
+            opacity: 0.15;
+        }
+
+        .menu-text {
+            font-size: 2rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            background: linear-gradient(135deg, #ffffff, #f5d76e);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: 2px;
+            text-shadow: 0 2px 10px #00000080;
+            margin-bottom: 0.5rem;
+        }
+
+        .menu-desc {
+            color: #9eb2e6;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-top: 1px dashed rgba(245, 176, 27, 0.4);
+            padding-top: 0.8rem;
+            width: 100%;
+        }
+
+        .admin-section {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin-top: 2.5rem;
+            padding: 1.2rem 1.8rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 80px;
+            border: 1px solid rgba(245, 176, 27, 0.25);
+            backdrop-filter: blur(10px);
+        }
+
+        .admin-info {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .admin-avatar {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(145deg, #f5b01b, #ffd966);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.4rem;
+            color: #0a0e1a;
+            box-shadow: 0 0 20px #f5b01b;
+        }
+
+        .admin-detail {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .admin-label {
+            color: #98addb;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+        }
+
+        .admin-handle {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .admin-handle a {
+            color: #fad974;
+            text-decoration: none;
+            border-bottom: 1px dotted #f5b01b;
+        }
+
+        .admin-handle a:hover {
+            color: #ffe88c;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 0.8rem;
+        }
+
+        .social-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(20, 30, 50, 0.7);
+            border: 1px solid #f5b01b60;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            text-decoration: none;
+            color: #fad974;
+            transition: 0.2s;
+        }
+
+        .social-icon:hover {
+            background: #f5b01b;
+            color: #0b0f1a;
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 0 25px gold;
+        }
+
+        .logout-btn {
+            background: rgba(245, 176, 27, 0.15);
+            border: 1px solid #f5b01b;
+            border-radius: 40px;
+            padding: 0.5rem 1.5rem;
+            color: #fad974;
+            cursor: pointer;
+            transition: 0.2s;
+            font-weight: 600;
+        }
+
+        .logout-btn:hover {
+            background: #f5b01b;
+            color: #0a0e1a;
+        }
+
+        @media (max-width: 650px) {
+            .vip-grid {
+                grid-template-columns: 1fr;
+            }
+            .vip-giant {
+                font-size: 5rem;
+            }
+            .vip-giant::before, .vip-giant::after {
+                display: none;
+            }
+            .menu-text {
+                font-size: 1.8rem;
+            }
+        }
+
+        @media (max-width: 500px) {
+            .login-card {
+                padding: 2rem 1.5rem;
+            }
+            .logo-image {
+                width: 100px;
+                height: 100px;
+            }
+            .logo-text {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Video Background -->
+    <div class="video-background">
+        <video autoplay muted loop playsinline>
+            <source src="https://files.catbox.moe/iugz9z.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div>
+    <div class="overlay"></div>
+
+    <!-- Halaman Login -->
+    <div id="login-page" class="page">
+        <div class="login-card">
+            <!-- Logo Section -->
+            <div class="logo-section">
+                <div class="logo-image">
+                    <img src="https://files.catbox.moe/rvxqfs.jpg" alt="StarsFiles Logo">
+                </div>
+                <div class="logo-text">StarsFiles Apps</div>
+                <div class="vip-badge">★ VIP ★</div>
+            </div>
+
+            <!-- LOGIN SYSTEM -->
+            <div class="system-title">
+                <span>LOGIN SYSTEM</span>
+            </div>
+
+            <!-- Buy account hint -->
+            <div class="buy-hint">
+                ✦ Do you have an account? Buy your account via telegram 
+                <a href="https://t.me/xonecyp" target="_blank" rel="noopener">Admin t.me/xonecyp</a>
+            </div>
+
+            <!-- Username field -->
+            <div class="input-group">
+                <label class="input-label" for="username">Username :</label>
+                <input type="text" id="username" class="input-field" placeholder="Enter your username" autocomplete="off">
+            </div>
+
+            <!-- Password field -->
+            <div class="input-group">
+                <label class="input-label" for="password">Password :</label>
+                <input type="password" id="password" class="input-field" placeholder="••••••••">
+            </div>
+
+            <!-- LOGIN button -->
+            <button class="login-btn" id="loginButton">LOGIN</button>
+
+            <!-- Footer links -->
+            <div class="footer-links">
+                <a class="footer-link" onclick="alert('Fitur lupa password ')">Forgot Password?</a>
+                <a class="footer-link" onclick="alert('Hubungi admin di t.me/xonecyp')">Contact Admin</a>
+                <a class="footer-link" onclick="alert('Terms & Conditions ')">Terms</a>
+            </div>
+
+            <!-- Copyright -->
+            <div class="copyright">
+                StarsFiles Apps VIP · secure login · © 2026
+            </div>
+        </div>
+    </div>
+
+    <!-- Halaman VIP Menu -->
+    <div id="vip-page" class="page">
+        <div class="vip-card">
+            <!-- Header dengan tombol logout -->
+            <div class="vip-header">
+                <div class="vip-logo" onclick="showLoginPage()">
+                    <span class="stars-text">StarsFiles</span>
+                    <span class="vip-badge-large">VIP</span>
+                </div>
+                <div style="display: flex; gap: 1rem; align-items: center;">
+                    <div class="date-badge">
+                        PREMIUM ACCESS
+                    </div>
+                    <div class="logout-btn" onclick="logout()">LOGOUT</div>
+                </div>
+            </div>
+
+            <!-- Main VIP title -->
+            <div class="vip-main-title">
+                <div class="vip-giant">VIP</div>
+            </div>
+
+            <!-- 4 Menu VIP tanpa ikon, dengan link eksternal -->
+            <div class="vip-grid">
+                <!-- 1. CONFIG VIP -->
+                <a href="https://www.mediafire.com/file/2qbajimsut6fmbt/AIMLOCK_20%2525_%2540YouKnowDizz.zip/file" target="_blank" rel="noopener" class="vip-menu-item">
+                    <div class="menu-text">AIMBOT 25% @YouKnowDizz</div>
+                    <div class="menu-desc">premium configs</div>
+                </a>
+
+                <!-- 2. FILE AIMLOCK VIP -->
+                <a href="https://www.mediafire.com/file/glv8tbe8bsmpvrf/AIMLOCK_35%2525_%2540YouKnowDizz.zip/file" target="_blank" rel="noopener" class="vip-menu-item">
+                    <div class="menu-text">AIMLOCK 35% @YouKnowDizz</div>
+                    <div class="menu-desc">aimbot · scripts</div>
+                </a>
+
+                <!-- 3. HOLOGRAM VIP -->
+                <a href="https://www.mediafire.com/file/fucvbc6e8m5bru3/AIMLOCK_47%2525_%2540YouKnowDizz.7z/file" target="_blank" rel="noopener" class="vip-menu-item">
+                    <div class="menu-text">AIMLOCK 47% @YouKnowDizz</div>
+                    <div class="menu-desc">Mempermudah HS</div>
+                </a>
+
+                <!-- 4. CAPCUT PRO -->
+                <a href="https://www.mediafire.com/file/3f6m5jvthql51zb/FILE_SET_ANDRO_2.0_NOXXA_BY_AKADEMI_ELITE_CS.docx/file" target="_blank" rel="noopener" class="vip-menu-item">
+                    <div class="menu-text">SET ANDRO @YouKnowDizz</div>
+                    <div class="menu-desc">Mempermudah Permainan</div>
+                </a>
+            </div>
+
+            <!-- Admin & Social Media -->
+            <div class="admin-section">
+                <div class="admin-info">
+                    <div class="admin-avatar">⚡</div>
+                    <div class="admin-detail">
+                        <span class="admin-label">VIP ADMIN</span>
+                        <span class="admin-handle"><a href="https://t.me/xonecyp" target="_blank" rel="noopener">t.me/xonecyp</a></span>
+                    </div>
+                </div>
+                <div class="social-icons">
+                    <a href="https://t.me/xonecyp" target="_blank" class="social-icon" title="Telegram">📱</a>
+                    <a href="#" class="social-icon" title="Twitter">🐦</a>
+                    <a href="#" class="social-icon" title="Instagram">📷</a>
+                    <a href="#" class="social-icon" title="Discord">💬</a>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="copyright" style="margin-top: 2rem;">
+                StarsFiles Apps VIP · exclusive access · © 2026
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DATA LOGIN YANG VALID (hanya ini yang bisa masuk)
+        const VALID_USERNAME = "Usn01172529008";
+        const VALID_PASSWORD = "01172529008";
+
+        // Elemen halaman
+        const loginPage = document.getElementById('login-page');
+        const vipPage = document.getElementById('vip-page');
+        const errorMessage = document.getElementById('error-message');
+
+        // Fungsi untuk menampilkan halaman login
+        function showLoginPage() {
+            loginPage.style.display = 'flex';
+            vipPage.style.display = 'none';
+            // Reset form
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+        }
+
+        // Fungsi untuk logout
+        function logout() {
+            showLoginPage();
+        }
+
+        // Fungsi untuk login
+        function handleLogin() {
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            
+            // Validasi: cek apakah username dan password kosong
+            if (!username || !password) {
+                alert('❌ Please fill in both username and password');
+                return;
+            }
+            
+            // Validasi: cek apakah username dan password sesuai dengan yang ditentukan
+            if (username === VALID_USERNAME && password === VALID_PASSWORD) {
+                // Login berhasil - pindah ke halaman VIP
+                loginPage.style.display = 'none';
+                vipPage.style.display = 'flex';
+                
+                // Simpan status login di session (opsional)
+                sessionStorage.setItem('isLoggedIn', 'true');
+            } else {
+                // Login gagal
+                alert('❌ Username atau password salah!\n\nUsername: ' + VALID_USERNAME + '\nPassword: ' + VALID_PASSWORD);
+                // Reset password field
+                document.getElementById('password').value = '';
+            }
+        }
+
+        // Event listener untuk tombol login
+        document.getElementById('loginButton').addEventListener('click', function(e) {
+            e.preventDefault();
+            handleLogin();
+        });
+
+        // Enter key untuk login
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && loginPage.style.display !== 'none') {
+                handleLogin();
+            }
+        });
+
+        // Inisialisasi: tampilkan halaman login
+        showLoginPage();
+
+        // Cek apakah sudah login sebelumnya (jika menggunakan sessionStorage)
+        // if (sessionStorage.getItem('isLoggedIn') === 'true') {
+        //     loginPage.style.display = 'none';
+        //     vipPage.style.display = 'flex';
+        // }
+    </script>
+</body>
+</html>
